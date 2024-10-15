@@ -6,4 +6,4 @@ tiktoken
 streamlit
 pandas
 pytesseract
-
+openpyxl
