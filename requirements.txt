@@ -6,3 +6,5 @@ tiktoken
 openpyxl
 transformers
 torch
+torchvision
+torchaudio
