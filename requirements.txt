@@ -1,10 +1,6 @@
 streamlit
+pandas
+openai
+pytesseract
 Pillow
-ultralytics
-supervision
-huggingface_hub
-opencv-python-headless
-transformers
-torch
-google-generativeai
-python-dotenv
+tiktoken
