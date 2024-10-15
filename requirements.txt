@@ -1,11 +1,2 @@
 streamlit
-pandas
-openai
-Pillow
-tiktoken
-openpyxl
-transformers
-torch
-torchvision
-torchaudio
 easyocr
