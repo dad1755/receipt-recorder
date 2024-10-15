@@ -1,7 +1,6 @@
 streamlit
 pandas
 openai
-pytesseract
 Pillow
 tiktoken
 openpyxl
