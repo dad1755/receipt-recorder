@@ -5,3 +5,4 @@ Pillow
 tiktoken
 openpyxl
 transformers
+torch
