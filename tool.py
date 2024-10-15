@@ -3,12 +3,17 @@ import pandas as pd
 import os
 from io import BytesIO
 import openai
-import pytesseract
 from PIL import Image
 import tiktoken
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
 # Set up OpenAI API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
+# Load the OCR model and tokenizer from Hugging Face
+tokenizer = AutoTokenizer.from_pretrained("yifeihu/TB-OCR-preview-0.1")
+model = AutoModelForCausalLM.from_pretrained("yifeihu/TB-OCR-preview-0.1", trust_remote_code=True)
 
 def get_text_response(extracted_text):
     """Get a response from OpenAI based on the extracted text."""
@@ -53,11 +58,26 @@ def save_to_excel(username, profile_name, data_to_save):
     output.seek(0)
     return output
 
+def extract_text_from_image(image):
+    """Use the OCR model to extract text from the image."""
+    # Preprocess the image for the model
+    image_bytes = image.convert("RGB").tobytes()
+
+    # Convert image to tensor (simulating the expected input)
+    inputs = tokenizer(image_bytes, return_tensors="pt")
+
+    # Generate OCR output
+    outputs = model.generate(**inputs)
+
+    # Decode the output to get the extracted text
+    extracted_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return extracted_text
+
 def process_uploaded_file(uploaded_file, username, profile_name):
     """Process the uploaded file and extract text."""
     try:
         image = Image.open(uploaded_file)
-        extracted_text = pytesseract.image_to_string(image)
+        extracted_text = extract_text_from_image(image)
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
         response_data = get_text_response(extracted_text)
