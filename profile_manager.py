@@ -1,10 +1,12 @@
 import streamlit as st  # Correct import
-
 import pandas as pd
 import os
 from PIL import Image
 from tool import get_text_response, calculate_token_count
-import pytesseract
+import easyocr  # Replace pytesseract with EasyOCR
+
+# Initialize EasyOCR Reader
+reader = easyocr.Reader(['en'], gpu=False)  # GPU is disabled for simplicity. Enable if necessary.
 
 def manage_profiles():
     # Check if the user is logged in
@@ -70,7 +72,7 @@ def calculate_total_sum(username, profile_name):
     total_sum = 0.0
 
     if os.path.exists(filename):
-        df = pd.read_excel(filename,engine='openpyxl')
+        df = pd.read_excel(filename, engine='openpyxl')
 
         # Check if 'Price' column exists
         if 'Price' in df.columns:
@@ -126,6 +128,23 @@ def delete_profile(username, profile_name):
     else:
         st.error("Profile file not found.")
 
+def extract_text_from_image(image):
+    """Use EasyOCR to extract text from the image."""
+    try:
+        image_np = np.array(image)  # Convert PIL image to NumPy array
+        result = reader.readtext(image_np)
+
+        if result:
+            extracted_text = "\n".join([detection[1] for detection in result])
+            return extracted_text
+        else:
+            st.warning("No text detected. Please try another image.")
+            return ""
+
+    except Exception as e:
+        st.error(f"Error extracting text from image: {e}")
+        return ""
+
 def show_design_upload_tools(username, profile_name):
     """Display the design upload tools."""
     if 'uploaded_file' not in st.session_state:
@@ -137,7 +156,8 @@ def show_design_upload_tools(username, profile_name):
         image = Image.open(uploaded_file)
         image.thumbnail((900, 900))
 
-        extracted_text = pytesseract.image_to_string(image)
+        # Use EasyOCR to extract text from the uploaded image
+        extracted_text = extract_text_from_image(image)
 
         messages = [
             {"role": "user", "content": "Extract store name, items, and prices."},
@@ -190,7 +210,6 @@ def show_design_upload_tools(username, profile_name):
             st.error("Failed to extract text. Please try again.")
     else:
         st.warning("No file uploaded. Please upload a design file.")
-
 
 
 def save_to_excel(username, profile_name, items):
