@@ -1,3 +1,9 @@
-streamlit
-easyocr
+openai
+Pillow
 numpy
+easyocr
+tiktoken
+streamlit
+pandas
+pytesseract
+
