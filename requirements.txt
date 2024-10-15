@@ -5,7 +5,3 @@ pytesseract
 Pillow
 tiktoken
 openpyxl
-libleptonica-dev
-libleptonica-dev
-libtesseract-dev
-tesseract-ocr
