@@ -4,3 +4,4 @@ openai
 Pillow
 tiktoken
 openpyxl
+transformers
