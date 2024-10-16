@@ -1,4 +1,5 @@
 openai==0.28
+tesseract-ocr
 Pillow
 numpy
 easyocr
